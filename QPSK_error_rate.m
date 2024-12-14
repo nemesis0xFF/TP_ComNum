@@ -1,7 +1,7 @@
 % QPSK Error Rate Simulation Script
 % Initialization
 A = 1;
-Delta = 20;
+Delta = 1;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
@@ -21,9 +21,8 @@ execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each d
 % Monte Carlo Simulation
 for i_snr = 1:length(Eb_N0_dB)
     % Calculate noise variance based on SNR
-    Eb_N0 = 10^(Eb_N0_dB(i_snr)/10);
-    %N0 = (A^2 * Delta^2) / (4 * Eb_N0);
-    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10)
+    Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
+    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10) %OK
     
     num_symbol_errors = zeros(3, 1);
     num_bit_errors = zeros(3, 1);
@@ -37,7 +36,7 @@ for i_snr = 1:length(Eb_N0_dB)
         
         received_symbols = AWGN(Delta, noise_variance, qpsk_symbols);
         
-        % Step 4: Demodulate received symbols using different ML detectors
+        % Detector 2: MLSymbolDetectorQPSK
         tic;
         demod_symbols_1 = MLSymbolDetectorQPSK(A, received_symbols);
         execution_times(1, i_snr) = execution_times(1, i_snr) + toc;
@@ -72,11 +71,8 @@ for i_snr = 1:length(Eb_N0_dB)
     end
     
     % Theoretical SER and BER for QPSK
-    E_N0_lin(i_snr)=10^(E_N0(i_snr)/10);
-    %theoretical_ser(i_snr) = 2 * qfunc(sqrt(2 * Eb_N0)) * (1 - 0.5 * qfunc(sqrt(2 * Eb_N0)));
-    %theoretical_ser(i_snr) = qfunc(sqrt(2 * Eb_N0))/2;
+    E_N0_lin(i_snr)=10^(Eb_N0_dB(i_snr)/10);
     theoretical_ber(i_snr) = erfc(sqrt((1/2)*E_N0_lin(i_snr)));
-
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 

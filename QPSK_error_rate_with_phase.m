@@ -22,9 +22,8 @@ execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each d
 % Monte Carlo Simulation
 for i_snr = 1:length(Eb_N0_dB)
     % Calculate noise variance based on SNR
-    Eb_N0 = 10^(Eb_N0_dB(i_snr)/10);
-    N0 = (A^2 * Delta^2) / (4 * Eb_N0);
-    noise_variance = N0 / 2;
+    Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
+    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10) %OK
     
     num_symbol_errors = zeros(3, 1);
     num_bit_errors = zeros(3, 1);
