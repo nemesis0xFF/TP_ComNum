@@ -71,9 +71,8 @@ for i_snr = 1:length(Eb_N0_dB)
     end
     
     % Theoretical SER and BER for QPSK
-    E_N0_lin(i_snr)=10^(Eb_N0_dB(i_snr)/10);
-    theoretical_ber(i_snr) = erfc(sqrt((1/2)*E_N0_lin(i_snr)));
-    theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
+    theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol
 end
 
 % Plot the results

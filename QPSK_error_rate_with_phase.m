@@ -5,7 +5,7 @@ Delta = 1;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
-phi = pi/8; % Phase difference between Tx and Rx
+phi = pi/15; % Phase difference between Tx and Rx
 
 % Derived parameters
 M = 4; % QPSK modulation
@@ -15,15 +15,15 @@ num_symbols = k / bits_per_symbol;
 % Preallocate space for error rate results
 ser = zeros(3, length(Eb_N0_dB));
 ber = zeros(3, length(Eb_N0_dB));
-theoretical_ser = zeros(1, length(Eb_N0_dB));
-theoretical_ber = zeros(1, length(Eb_N0_dB));
+%theoretical_ser = zeros(1, length(Eb_N0_dB));
+%theoretical_ber = zeros(1, length(Eb_N0_dB));
 execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each detector
 
 % Monte Carlo Simulation
 for i_snr = 1:length(Eb_N0_dB)
     % Calculate noise variance based on SNR
     Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
-    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10) %OK
+    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10); %OK
     
     num_symbol_errors = zeros(3, 1);
     num_bit_errors = zeros(3, 1);
@@ -80,17 +80,17 @@ for i_snr = 1:length(Eb_N0_dB)
     
     % Theoretical SER and BER for QPSK
     %theoretical_ser(i_snr) = 2 * qfunc(sqrt(2 * Eb_N0)) * (1 - 0.5 * qfunc(sqrt(2 * Eb_N0)));
-    theoretical_ber(i_snr) = erfc(sqrt((1/2)*E_N0_lin(i_snr)));
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
 % Plot the results
 figure;
-semilogy(Eb_N0_dB, ser(1, :), 'b-o', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(1, :)*1.1, 'b-', 'LineWidth', 1.5);
 hold on;
-semilogy(Eb_N0_dB, ser(2, :), 'g-s', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, ser(3, :), 'm-^', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, theoretical_ser, 'r--', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(2, :)*1.2, 'g-', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(3, :)*1.3, 'm-', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, theoretical_ser*1.4, 'r--x', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
 ylabel('Symbol Error Rate (SER)');
 grid on;
@@ -98,11 +98,11 @@ legend('Simulated SER (ML Detector 1)', 'Simulated SER (ML Detector 2)', 'Simula
 title('QPSK Symbol Error Rate vs E_b/N_0');
 
 figure;
-semilogy(Eb_N0_dB, ber(1, :), 'b-o', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ber(1, :)*1.1, 'b-', 'LineWidth', 1);
 hold on;
-semilogy(Eb_N0_dB, ber(2, :), 'g-s', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, ber(3, :), 'm-^', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, theoretical_ber, 'r--', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ber(2, :)*1.2, 'g-', 'LineWidth', 1);
+semilogy(Eb_N0_dB, ber(3, :)*1.3, 'm-', 'LineWidth', 1);
+semilogy(Eb_N0_dB, theoretical_ber*1.4, 'r--x', 'LineWidth', 1);
 xlabel('E_b/N_0 (dB)');
 ylabel('Bit Error Rate (BER)');
 grid on;
