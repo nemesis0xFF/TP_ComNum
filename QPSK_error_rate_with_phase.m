@@ -1,6 +1,6 @@
 % QPSK Error Rate Simulation Script
 % Initialization
-A = 300;
+A = 1;
 Delta = 1;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
@@ -80,7 +80,8 @@ for i_snr = 1:length(Eb_N0_dB)
     end
     
     % Theoretical SER and BER for QPSK
-    theoretical_ser(i_snr) = 2 * qfunc(sqrt(2 * Eb_N0)) * (1 - 0.5 * qfunc(sqrt(2 * Eb_N0)));
+    %theoretical_ser(i_snr) = 2 * qfunc(sqrt(2 * Eb_N0)) * (1 - 0.5 * qfunc(sqrt(2 * Eb_N0)));
+    theoretical_ber(i_snr) = erfc(sqrt((1/2)*E_N0_lin(i_snr)));
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
