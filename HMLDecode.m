@@ -1,44 +1,44 @@
-function m_dec = HMLDecode(ListCodeWord, m_est)
-    % Calculate the Hamming distance between m_est and each codeword in List
+function m_dec = HMLDecode(ListeCodeWord, m_est)
     H = [1 1 1 0 1 0 0 0;
          1 1 0 1 0 1 0 0;
          1 0 1 1 0 0 1 0;
          1 1 1 1 0 0 0 1];
-    G = [1 0 0 0 1 1 1 1;
-         0 1 0 0 1 1 0 1;
-         0 0 1 0 1 0 1 1;
-         0 0 0 1 0 1 1 1];
-
-
-    [num_codewords, n_c] = size(ListCodeWord);
-    num_blocks = length(m_est) / n_c;
-    m_est;
+    % Obtenir les dimensions des mots de code
+    [num_codewords, n_c] = size(ListeCodeWord);
     
-    k_c=size(G,1)
-    m_est_reshaped = reshape(m_est, n_c, num_blocks).'
-    messages = dec2bin(0:2^k_c-1)-48
+    % Nombre de blocs dans m_est
+    num_blocks = length(m_est) / n_c;
+    
+    % Reshape m_est en blocs
+    m_est_reshaped = reshape(m_est, n_c, num_blocks).';
+    
+    % Initialisation de m_dec
+    m_dec = zeros(num_blocks, n_c);
 
-    ListCodeWord
-    if any(IsErrorDetection(m_est, H)) == 1
-        1;
-    end
-    for i = 1:size(ListCodeWord, 1)
-        for j = 1:size(m_est_reshaped, 1)
-            if isequal(m_est_reshaped(j, :), ListCodeWord(i, :))
-                m_decode(j, :) = 1
-            end
+    % Initialisation du message original
+    original_messages = zeros(num_blocks, size(ListeCodeWord, 1)); 
+    
+    % Parcourir chaque bloc
+    for i = 1:num_blocks
+        % Bloc reçu
+        received_block = m_est_reshaped(i, :);
+        
+        % Vérifier les erreurs avec IsErrorDetection
+        if IsErrorDetection(received_block, H)
+            % Si une erreur est détectée, calculer la distance de Hamming
+            hamming_distances = sum(abs(ListeCodeWord - received_block), 2);
+            [~, min_index] = min(hamming_distances); % Trouver le codeword le plus proche
+            m_dec(i, :) = ListeCodeWord(min_index, :); % Codeword décodé
+        else
+            % Pas d'erreur détectée, prendre le bloc directement
+            m_dec(i, :) = received_block;
         end
     end
-               
-    
-    
-        
-    
-    
 
-    m_dec = zeros(size(m_est_reshaped));
+    % Convertir les mots de code en messages originaux
+    % Récupérer les bits d'information à partir des mots de code
+    original_messages = m_dec(:, 1:size(ListeCodeWord, 2) - size(H, 1)); 
     
-    
-    
-    m_dec = m_dec(:).'; % Reshape into a vector
+    % Aplatir le résultat final
+    m_dec = reshape(original_messages.', 1, []);
 end

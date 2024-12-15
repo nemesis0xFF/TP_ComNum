@@ -1,7 +1,7 @@
 % QPSK Coded Error Rate Simulation Script
 % Initialization
-A = 30; 
-Delta = 2; 
+A = 1; 
+Delta = 1; 
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
@@ -16,14 +16,15 @@ n_block = 7; % Length of each encoded block
 num_codewords_per_frame = k / k_block;
 
 % Generator matrix and parity-check matrix
-G = [1 0 0 0 1 1 0;
-     0 1 0 0 1 0 1;
-     0 0 1 0 0 1 1;
-     0 0 0 1 1 1 1];
-H = [1 1 1 0 1 0 0;
-     1 0 1 0 0 1 0;
-     1 1 0 1 0 0 1;
-     1 1 1 0 0 0 1];
+G = [1 0 0 0 1 1 1 1;
+     0 1 0 0 1 1 0 1;
+     0 0 1 0 1 0 1 1;
+     0 0 0 1 0 1 1 1];
+
+H = [1 1 1 0 1 0 0 0;
+     1 1 0 1 0 1 0 0;
+     1 0 1 1 0 0 1 0;
+     1 1 1 1 0 0 0 1];
 
 % Generate all possible codewords
 List = GenerateListeCodeWords(G);

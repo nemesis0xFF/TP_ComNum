@@ -5,7 +5,7 @@ Delta = 10;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
-phi = pi/3 en att; % Phase difference between Tx and Rx
+phi = pi/3; % Phase difference between Tx and Rx
 %phi = 0
 
 % Derived parameters
