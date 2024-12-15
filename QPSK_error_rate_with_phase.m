@@ -1,11 +1,12 @@
 % QPSK Error Rate Simulation Script
 % Initialization
-A = 1;
-Delta = 1;
+A = 15;
+Delta = 10;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
 phi = pi/15; % Phase difference between Tx and Rx
+phi = 0
 
 % Derived parameters
 M = 4; % QPSK modulation
@@ -79,18 +80,17 @@ for i_snr = 1:length(Eb_N0_dB)
     end
     
     % Theoretical SER and BER for QPSK
-    %theoretical_ser(i_snr) = 2 * qfunc(sqrt(2 * Eb_N0)) * (1 - 0.5 * qfunc(sqrt(2 * Eb_N0)));
     theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
 % Plot the results
 figure;
-semilogy(Eb_N0_dB, ser(1, :)*1.1, 'b-', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(1, :), 'b-d', 'LineWidth', 1.5);
 hold on;
-semilogy(Eb_N0_dB, ser(2, :)*1.2, 'g-', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, ser(3, :)*1.3, 'm-', 'LineWidth', 1.5);
-semilogy(Eb_N0_dB, theoretical_ser*1.4, 'r--x', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(2, :), 'g-', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, ser(3, :), 'm-', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, theoretical_ser, 'r--x', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
 ylabel('Symbol Error Rate (SER)');
 grid on;
@@ -98,11 +98,11 @@ legend('Simulated SER (ML Detector 1)', 'Simulated SER (ML Detector 2)', 'Simula
 title('QPSK Symbol Error Rate vs E_b/N_0');
 
 figure;
-semilogy(Eb_N0_dB, ber(1, :)*1.1, 'b-', 'LineWidth', 1);
+semilogy(Eb_N0_dB, ber(1, :), 'b-d', 'LineWidth', 1);
 hold on;
-semilogy(Eb_N0_dB, ber(2, :)*1.2, 'g-', 'LineWidth', 1);
-semilogy(Eb_N0_dB, ber(3, :)*1.3, 'm-', 'LineWidth', 1);
-semilogy(Eb_N0_dB, theoretical_ber*1.4, 'r--x', 'LineWidth', 1);
+semilogy(Eb_N0_dB, ber(2, :), 'g-', 'LineWidth', 1);
+semilogy(Eb_N0_dB, ber(3, :), 'm-', 'LineWidth', 1);
+semilogy(Eb_N0_dB, theoretical_ber, 'r--x', 'LineWidth', 1);
 xlabel('E_b/N_0 (dB)');
 ylabel('Bit Error Rate (BER)');
 grid on;
