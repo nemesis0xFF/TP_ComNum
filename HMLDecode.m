@@ -14,6 +14,7 @@ function m_dec = HMLDecode(ListCodeWord, m_est)
     num_blocks = length(m_est) / n_c;
     m_est;
     
+    k_c=size(G,1)
     m_est_reshaped = reshape(m_est, n_c, num_blocks).'
     messages = dec2bin(0:2^k_c-1)-48
 
