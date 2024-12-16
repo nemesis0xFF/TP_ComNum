@@ -5,7 +5,7 @@ Delta = 1;
 k = 10000; % Number of bits
 nb_frames = 100; % Number of frames
 Eb_N0_dB = -2:2:14; % Range of SNR in dB
-phi = pi/8; % Phase difference between Tx and Rx
+phi = pi/10; % Phase difference between Tx and Rx
 
 % Derived parameters
 M = 4; % QPSK modulation
@@ -36,9 +36,8 @@ execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each d
 % Monte Carlo Simulation
 for i_snr = 1:length(Eb_N0_dB)
     % Calculate noise variance based on SNR
-    Eb_N0 = 10^(Eb_N0_dB(i_snr)/10);
-    N0 = (A^2 * Delta^2) / (4 * Eb_N0);
-    noise_variance = N0 / 2;
+    Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
+    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10); %OK
     
     num_bit_errors = zeros(3, 1);
     total_bits = 0;
@@ -92,6 +91,10 @@ for i_snr = 1:length(Eb_N0_dB)
     for detector = 1:3
         ber_coded(detector, i_snr) = num_bit_errors(detector) / total_bits;
     end
+
+    % Theoretical SER and BER for QPSK
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
+    theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
 % Plot the results
@@ -100,10 +103,12 @@ semilogy(Eb_N0_dB, ber_coded(1, :), 'b-o', 'LineWidth', 1.5);
 hold on;
 semilogy(Eb_N0_dB, ber_coded(2, :), 'g-s', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, ber_coded(3, :), 'm-^', 'LineWidth', 1.5);
+semilogy(Eb_N0_dB, theoretical_ber, 'r--x', 'LineWidth', 1.5);
+
 xlabel('E_b/N_0 (dB)');
 ylabel('Bit Error Rate (BER)');
 grid on;
-legend('Simulated BER (ML Detector 1)', 'Simulated BER (ML Detector 2)', 'Simulated BER (ML Detector 3)');
+legend('Simulated BER (ML Detector 1)', 'Simulated BER (ML Detector 2)', 'Simulated BER (ML Detector 3)', 'Theoretical BER');
 title('QPSK Coded Bit Error Rate vs E_b/N_0');
 xlim([min(Eb_N0_dB), max(Eb_N0_dB)]); % Ensure the x-axis goes to the full range of -2 to 14 dB
 
