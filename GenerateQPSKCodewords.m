@@ -1,5 +1,5 @@
 function QPSKCodewords = GenerateQPSKCodewords(G, A)
-    ListeCodeWords = GenerateListeCodeWords(G)
+    ListeCodeWords = GenerateListeCodeWords(G);
     numCodeWords = size(ListeCodeWords, 1);
     n_c = size(G, 2);  
     
