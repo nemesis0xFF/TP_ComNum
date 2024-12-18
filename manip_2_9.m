@@ -26,7 +26,7 @@ Eb_N0_dB_rep_1_3 = Es_N0_dB - 10*log10(Rc_rep_1_3);
 Eb_N0_dB_hamming = Es_N0_dB - 10*log10(Rc_hamming);
 Eb_N0_dB_eml = Eb_N0_dB_hamming;
 
-list_qpsk_codewords = GenerateQPSKCodewords(G_Hamming, A)
+list_qpsk_codewords = GenerateQPSKCodewords(G_Hamming, A);
 
 % Simulation Monte Carlo 
 for i_snr = 1:length(Es_N0_dB)
