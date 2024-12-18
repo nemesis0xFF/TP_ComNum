@@ -1,21 +1,20 @@
 % QPSK Coded Error Rate Simulation Script
-% Initialization
+% initialisation
 A = 1; 
 Delta = 1; 
-k = 10000; % Number of bits
-nb_frames = 100; % Number of frames
-Eb_N0_dB = -2:2:14; % Range of SNR in dB
-phi = pi/10; % Phase difference between Tx and Rx
+k = 10000; % nombre de bits
+nb_frames = 100; % nombre de frames
+Eb_N0_dB = -2:2:14; % eb/N0
+phi = pi/10; % dephasage
 
-% Derived parameters
-M = 4; % QPSK modulation
+M = 4; 
 bits_per_symbol = log2(M);
 num_symbols = k / bits_per_symbol;
-k_block = 4; % Number of information bits per codeword
-n_block = 7; % Length of each encoded block
+k_block = 4; % nombre de bit par mot de code
+n_block = 7; % longueur du bloc codee
 num_codewords_per_frame = k / k_block;
 
-% Generator matrix and parity-check matrix
+% matrice generatrice et parity check 
 G = [1 0 0 0 1 1 1 1;
      0 1 0 0 1 1 0 1;
      0 0 1 0 1 0 1 1;
@@ -26,16 +25,15 @@ H = [1 1 1 0 1 0 0 0;
      1 0 1 1 0 0 1 0;
      1 1 1 1 0 0 0 1];
 
-% Generate all possible codewords
+% liste des mots de code
 List = GenerateListeCodeWords(G);
 
-% Preallocate space for error rate results
 ber_coded = zeros(3, length(Eb_N0_dB));
-execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each detector
+execution_times = zeros(3, length(Eb_N0_dB)); 
 
-% Monte Carlo Simulation
+% simulation Monte Carlo 
 for i_snr = 1:length(Eb_N0_dB)
-    % Calculate noise variance based on SNR
+    % variance du bruit
     Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
     noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10); %OK
     
@@ -43,21 +41,21 @@ for i_snr = 1:length(Eb_N0_dB)
     total_bits = 0;
     
     for frame = 1:nb_frames
-        % Step 1: Generate random bits and encode them
+        % Etape 1 : generation des bits aleatoires
         bits = randi([0 1], 1, k);
         encoded_bits = Encode(G, bits);
         
-        % Step 2: Map encoded bits to QPSK symbols using Bit2SymbolMappingQPSKGray
+        % Etape 2 : Mapping
         qpsk_symbols = Bit2SymbolMappingQPSKGray(A, encoded_bits);
         
-        % Step 3: Apply phase shift between Tx and Rx
+        % Etape 3 : dephasage 
         qpsk_symbols_shifted = qpsk_symbols * exp(1i * phi);
         
-        % Step 4: Add noise to symbols using AWGN function
+        % Etape 4 : ajout du bruit
         received_symbols = AWGN(Delta, noise_variance, qpsk_symbols_shifted);
         
-        % Step 5: Demodulate received symbols using different ML detectors
-        % Detector 1: MLSymbolDetectorQPSK
+        % utilisation des differents detecteurs
+        %MLSymbolDetectorQPSK
         tic;
         demod_symbols_1 = MLSymbolDetectorQPSK(A, received_symbols);
         demod_bits_1 = Symbol2BitsDemappingQPSKGray(A, Delta, demod_symbols_1);
@@ -66,7 +64,7 @@ for i_snr = 1:length(Eb_N0_dB)
         len_bits = min(length(bits), length(decoded_bits_1));
         num_bit_errors(1) = num_bit_errors(1) + sum(bits(1:len_bits) ~= decoded_bits_1(1:len_bits));
         
-        % Detector 2: MLSymbolDetectorQPSKdistance
+        %MLSymbolDetectorQPSKdistance
         tic;
         demod_symbols_2 = MLSymbolDetectorQPSKdistance(A, received_symbols);
         demod_bits_2 = Symbol2BitsDemappingQPSKGray(A, Delta, demod_symbols_2);
@@ -75,7 +73,7 @@ for i_snr = 1:length(Eb_N0_dB)
         len_bits = min(length(bits), length(decoded_bits_2));
         num_bit_errors(2) = num_bit_errors(2) + sum(bits(1:len_bits) ~= decoded_bits_2(1:len_bits));
         
-        % Detector 3: MLSymbolDetectorQPSKlowCPLX
+        %MLSymbolDetectorQPSKlowCPLX
         tic;
         demod_symbols_3 = MLSymbolDetectorQPSKlowCPLX(A, received_symbols);
         demod_bits_3 = Symbol2BitsDemappingQPSKGray(A, Delta, demod_symbols_3);
@@ -87,17 +85,17 @@ for i_snr = 1:length(Eb_N0_dB)
         total_bits = total_bits + len_bits;
     end
     
-    % Calculate BER for each detector
+    % calcul TEB
     for detector = 1:3
         ber_coded(detector, i_snr) = num_bit_errors(detector) / total_bits;
     end
 
-    % Theoretical SER and BER for QPSK
+    % courbes theoriques
     theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
-% Plot the results
+% affichages
 figure;
 semilogy(Eb_N0_dB, ber_coded(1, :), 'b-o', 'LineWidth', 1.5);
 hold on;
@@ -112,7 +110,6 @@ legend('Simulated BER (ML Detector 1)', 'Simulated BER (ML Detector 2)', 'Simula
 title('QPSK Coded Bit Error Rate vs E_b/N_0');
 xlim([min(Eb_N0_dB), max(Eb_N0_dB)]); % Ensure the x-axis goes to the full range of -2 to 14 dB
 
-% Plot execution times for each detector
 figure;
 plot(Eb_N0_dB, execution_times(1, :) / nb_frames, 'b-o', 'LineWidth', 1.5);
 hold on;
