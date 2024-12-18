@@ -27,7 +27,6 @@ for i_snr = 1:length(Es_N0_dB)
     errors_hamming = 0;
 
     for frame = 1:nb_frames
-        % Generate random bits
         bits = randi([0 1], 1, k);
         
         % Code 1: Code a repetition (Rc 1/2)
