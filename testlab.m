@@ -61,7 +61,7 @@ c=Encode(G,m);
 ListeCodeWord = GenerateListeCodeWords(G);
 ListeCodeWord2 = GenerateListeCodeWords(G2);
 
-ListeCodeWordSym=Copy_of_GenerateListeCodeWords(G,A);
+ListeCodeWordSym=GenerateQPSKCodewords(G,A);
 
 m_est_HML=[1 1 1 1 1 1 0 0 1 0 0 1 1 1 1 1 0 1 1 1 0 0 1 1];
 m_dec=HMLDecode(ListeCodeWord,m_est_HML);
