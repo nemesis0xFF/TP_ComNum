@@ -1,4 +1,3 @@
-% QPSK_coded_error_rate.m
 % initialisation
 clc;
 clear;
