@@ -1,28 +1,24 @@
 function m_dec = EMLDecode(A, Delta, ListeSymbWord, received_symbols)
-    % ListeSymbWord : Liste des séquences de symboles QPSK possibles (N x n_c)
-    % received_symbols : Vecteur des symboles QPSK reçus
-    % m_dec : Message binaire décodé
 
-    % Obtenir les dimensions des mots de code
+    % dimensions mot de code
     [num_codewords, n_c] = size(ListeSymbWord); % N : nombre de codewords, n_c : longueur des mots
-    % Nombre de blocs dans les symboles reçus
+    % nombre de bloc 
     num_blocks = length(received_symbols) / n_c;
     
-    % Reshape des symboles reçus en blocs
+    % Reshape des symboles en bloc
     received_blocks = reshape(received_symbols, n_c, num_blocks).';
-    
-    % Initialisation de m_dec
+
     m_dec = zeros(num_blocks, n_c);
     
-    % Boucle sur chaque bloc pour chercher le codeword le plus proche
+    % boucle sur chaque bloc pour chercher le codeword le plus proche
     for i = 1:num_blocks
         % Bloc reçu
         received_block = received_blocks(i, :);
         
-        % Calcul des distances Euclidiennes avec tous les codewords possibles
+        % distance euclidienne pour les mots de code
         euclidean_distances = sum(abs(ListeSymbWord - received_block).^2, 2);
         
-        % Trouver le codeword avec la distance minimale
+        % identifier le mot de code avec la plus petite distance euclidienne
         [~, min_index] = min(euclidean_distances);
         m_dec(i, :) = ListeSymbWord(min_index, :);
     end
