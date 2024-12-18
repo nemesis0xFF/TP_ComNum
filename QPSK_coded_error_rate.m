@@ -90,7 +90,7 @@ for i_snr = 1:length(Eb_N0_dB)
     end
 
     % courbes theoriques
-    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin));
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
