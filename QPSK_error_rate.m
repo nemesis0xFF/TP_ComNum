@@ -19,7 +19,7 @@ execution_times = zeros(3, length(Eb_N0_dB));
 for i_snr = 1:length(Eb_N0_dB)
     % variance du bruit
     Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
-    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10) %OK
+    noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10); %OK
     
     num_symbol_errors = zeros(3, 1);
     num_bit_errors = zeros(3, 1);
@@ -68,8 +68,8 @@ for i_snr = 1:length(Eb_N0_dB)
     end
     
     % courbes theoriques
-    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
-    theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin));
+    theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol;
 end
 
 % affichages
@@ -83,7 +83,7 @@ xlabel('E_b/N_0 (dB)');
 ylabel('Taux erreurs symboles TES');
 grid on;
 legend('TES simulé (ML1)', 'TES simulé (ML2)', 'TES simulé (ML3)', 'TES theorique');
-title('Taux d'erreurs symboles en fonction du E_b/N_0');
+title('Taux erreurs symboles en fonction du E_b/N_0');
 
 figure;
 semilogy(Eb_N0_dB, ber(1, :), 'b-o', 'LineWidth', 1.5);
@@ -92,10 +92,10 @@ semilogy(Eb_N0_dB, ber(2, :), 'g-s', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, ber(3, :), 'm-^', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, theoretical_ber, 'r--', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
-ylabel('Taux d'erreur binaires');
+ylabel('Taux erreur binaires');
 grid on;
 legend('TEB simulé (ML1)', 'TEB simulé (ML2)', 'TEB simulé (ML3)', 'TEB theorique');
-title('Taux d'erreur binaire en fonction du E_b/N_0');
+title('Taux erreur binaire en fonction du E_b/N_0');
 xlim([min(Eb_N0_dB), max(Eb_N0_dB)]);
 
 % affichages
