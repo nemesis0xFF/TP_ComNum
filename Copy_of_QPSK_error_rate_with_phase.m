@@ -1,4 +1,3 @@
-% Script de simulation du taux d'erreur QPSK avec variation de phase et de SNR
 % initialisation
 A = 1;
 Delta = 1;
