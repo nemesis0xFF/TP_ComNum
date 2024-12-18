@@ -20,22 +20,26 @@ G_Hamming = [1 0 0 0 1 1 1 1;
 ber_repetition_1_2 = zeros(1, length(Es_N0_dB));
 ber_repetition_1_3 = zeros(1, length(Es_N0_dB));
 ber_hamming = zeros(1, length(Es_N0_dB));
+ber_eml = zeros(1, length(Es_N0_dB));
 
 % Convert Es/N0 to Eb/N0 for each code
-Eb_N0_dB_rep_1_2 = Es_N0_dB - 10*log10(Rc_rep_1_2);
-Eb_N0_dB_rep_1_3 = Es_N0_dB - 10*log10(Rc_rep_1_3);
-Eb_N0_dB_hamming = Es_N0_dB - 10*log10(Rc_hamming);
+Eb_N0_dB_rep_1_2 = Es_N0_dB;
+Eb_N0_dB_rep_1_3 = Es_N0_dB - 10*log10(Rc_rep_1_3*log2(4));
+Eb_N0_dB_hamming = Es_N0_dB;
+Eb_N0_dB_eml = Eb_N0_dB_hamming; % Même taux que le Hamming pour comparaison
 
 list_qpsk_codewords = GenerateQPSKCodewords(G_Hamming, A)
 
 % Monte Carlo Simulation
 for i_snr = 1:length(Es_N0_dB)
+    i_snr
     Es_N0_lin = 10^(Es_N0_dB(i_snr)/10);
     noise_variance = (A^2 * Delta^2) / (2 * Es_N0_lin);
     total_bits = 0;
     errors_repetition_1_2 = 0;
     errors_repetition_1_3 = 0;
     errors_hamming = 0;
+    errors_eml = 0;
 
     for frame = 1:nb_frames
         % Generate random bits
@@ -79,15 +83,21 @@ for i_snr = 1:length(Es_N0_dB)
     ber_repetition_1_2(i_snr) = errors_repetition_1_2 / total_bits;
     ber_repetition_1_3(i_snr) = errors_repetition_1_3 / total_bits;
     ber_hamming(i_snr) = errors_hamming / total_bits;
+    ber_eml(i_snr) = errors_eml / total_bits;
+
+    theoretical_ser(i_snr) = erfc(sqrt((1/2)*10.^(Es_N0_dB(i_snr)/10)))
+    theoretical_ber(i_snr) = theoretical_ser(i_snr) / 2;
 end
 
 % Plot the results as a function of Eb/N0
 figure;
 semilogy(Eb_N0_dB_rep_1_2, ber_repetition_1_2, 'b-o', 'LineWidth', 1.5, 'DisplayName', 'Repetition Code x2');
 hold on;
+semilogy(Eb_N0_dB_eml, ber_eml, 'c-d', 'LineWidth', 1.5, 'DisplayName', 'EML Decode');
+
 semilogy(Eb_N0_dB_rep_1_3, ber_repetition_1_3, 'g-s', 'LineWidth', 1.5, 'DisplayName', 'Repetition Code x3');
 semilogy(Eb_N0_dB_hamming, ber_hamming, 'm-^', 'LineWidth', 1.5, 'DisplayName', 'Hamming Code (8,4)');
-semilogy(Eb_N0_dB_eml, ber_eml, 'c-d', 'LineWidth', 1.5, 'DisplayName', 'EML Decode');
+
 xlabel('E_b/N_0 (dB)');
 ylabel('Bit Error Rate (BER)');
 grid on;

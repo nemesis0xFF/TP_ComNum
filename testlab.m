@@ -56,9 +56,12 @@ decoded_bits = HMLDecode(ListeCodeWord, demap_bits)
 
 
 
+m = [1 0 0 0 1 1 0 1 1 0 1 1 1 1 1 1 0 0 0 1]
+encoded_bits = Encode(G, m);
+sym2 = Bit2SymbolMappingQPSKGray(A, encoded_bits);
 
-
-
+decoded = EMLDecode(A, Delta, GenerateQPSKCodewords(G, A), sym2)
+m
 % Test error detection
 %r = [0 1 0 0 1 1 1 1]; % Example received vector
 %error1 = IsErrorDetection(r, H); 

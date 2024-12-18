@@ -22,9 +22,9 @@ ber_repetition_1_3 = zeros(1, length(Es_N0_dB));
 ber_hamming = zeros(1, length(Es_N0_dB));
 
 % Convert Es/N0 to Eb/N0 for each code
-Eb_N0_dB_rep_1_2 = Es_N0_dB - 10*log10(Rc_rep_1_2);
-Eb_N0_dB_rep_1_3 = Es_N0_dB - 10*log10(Rc_rep_1_3);
-Eb_N0_dB_hamming = Es_N0_dB - 10*log10(Rc_hamming);
+Eb_N0_dB_rep_1_2 = Es_N0_dB;
+Eb_N0_dB_rep_1_3 = Es_N0_dB - 10*log10(Rc_rep_1_3*log2(4));
+Eb_N0_dB_hamming = Es_N0_dB;
 
 % Monte Carlo Simulation
 for i_snr = 1:length(Es_N0_dB)
