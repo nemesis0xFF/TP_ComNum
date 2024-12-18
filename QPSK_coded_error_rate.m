@@ -104,11 +104,11 @@ semilogy(Eb_N0_dB, ber_coded(3, :), 'm-^', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, theoretical_ber, 'r--x', 'LineWidth', 1.5);
 
 xlabel('E_b/N_0 (dB)');
-ylabel('Bit Error Rate (BER)');
+ylabel('Taux erreur bianire TEB');
 grid on;
-legend('Simulated BER (ML Detector 1)', 'Simulated BER (ML Detector 2)', 'Simulated BER (ML Detector 3)', 'Theoretical BER');
-title('QPSK Coded Bit Error Rate vs E_b/N_0');
-xlim([min(Eb_N0_dB), max(Eb_N0_dB)]); % Ensure the x-axis goes to the full range of -2 to 14 dB
+legend('TEB Simule (ML1)', 'TEB Simule (ML2)', 'TEB Simule (ML3)', 'TEB theorique');
+title('Taux erreur bianire en fonction du E_b/N_0');
+xlim([min(Eb_N0_dB), max(Eb_N0_dB)]);
 
 figure;
 plot(Eb_N0_dB, execution_times(1, :) / nb_frames, 'b-o', 'LineWidth', 1.5);
@@ -116,8 +116,8 @@ hold on;
 plot(Eb_N0_dB, execution_times(2, :) / nb_frames, 'g-s', 'LineWidth', 1.5);
 plot(Eb_N0_dB, execution_times(3, :) / nb_frames, 'm-^', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
-ylabel('Average Execution Time per Frame (seconds)');
+ylabel('Temps moyen execution');
 grid on;
-legend('ML Detector 1', 'ML Detector 2', 'ML Detector 3');
-title('Average Execution Time vs E_b/N_0');
+legend('ML1', 'ML2', 'ML3');
+title('Temps execution moyen en fonction de E_b/N_0');
 
