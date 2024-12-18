@@ -1,26 +1,24 @@
 % QPSK Error Rate Simulation Script
-% Initialization
+% initialisation
 A = 1;
 Delta = 1;
-k = 10000; % Number of bits
-nb_frames = 100; % Number of frames
-Eb_N0_dB = -2:2:14; % Range of SNR in dB
+k = 10000; % nombre de bits
+nb_frames = 100; % nombre de frames
+Eb_N0_dB = -2:2:14; % eb/N0
 
-% Derived parameters
-M = 4; % QPSK modulation
+M = 4;
 bits_per_symbol = log2(M);
 num_symbols = k / bits_per_symbol;
 
-% Preallocate space for error rate results
 ser = zeros(3, length(Eb_N0_dB));
 ber = zeros(3, length(Eb_N0_dB));
 theoretical_ser = zeros(1, length(Eb_N0_dB));
 theoretical_ber = zeros(1, length(Eb_N0_dB));
-execution_times = zeros(3, length(Eb_N0_dB)); % Store execution times for each detector
+execution_times = zeros(3, length(Eb_N0_dB));
 
-% Monte Carlo Simulation
+% simulation Monte Carlo
 for i_snr = 1:length(Eb_N0_dB)
-    % Calculate noise variance based on SNR
+    % variance du bruit
     Eb_N0_lin = 10^(Eb_N0_dB(i_snr)/10);
     noise_variance = ((A^2*Delta^2)/4)*10^(-(Eb_N0_dB(i_snr))/10) %OK
     
@@ -36,7 +34,7 @@ for i_snr = 1:length(Eb_N0_dB)
         
         received_symbols = AWGN(Delta, noise_variance, qpsk_symbols);
         
-        % Detector 2: MLSymbolDetectorQPSK
+        %MLSymbolDetectorQPSK
         tic;
         demod_symbols_1 = MLSymbolDetectorQPSK(A, received_symbols);
         execution_times(1, i_snr) = execution_times(1, i_snr) + toc;
@@ -44,7 +42,7 @@ for i_snr = 1:length(Eb_N0_dB)
         num_symbol_errors(1) = num_symbol_errors(1) + sum(qpsk_symbols ~= demod_symbols_1.');
         num_bit_errors(1) = num_bit_errors(1) + sum(bits ~= demod_bits_1);
         
-        % Detector 2: MLSymbolDetectorQPSKdistance
+        % MLSymbolDetectorQPSKdistance
         tic;
         demod_symbols_2 = MLSymbolDetectorQPSKdistance(A, received_symbols);
         execution_times(2, i_snr) = execution_times(2, i_snr) + toc;
@@ -52,7 +50,7 @@ for i_snr = 1:length(Eb_N0_dB)
         num_symbol_errors(2) = num_symbol_errors(2) + sum(qpsk_symbols ~= demod_symbols_2.');
         num_bit_errors(2) = num_bit_errors(2) + sum(bits ~= demod_bits_2);
         
-        % Detector 3: MLSymbolDetectorQPSKlowCPLX
+        % MLSymbolDetectorQPSKlowCPLX
         tic;
         demod_symbols_3 = MLSymbolDetectorQPSKlowCPLX(A, received_symbols);
         execution_times(3, i_snr) = execution_times(3, i_snr) + toc;
@@ -64,18 +62,18 @@ for i_snr = 1:length(Eb_N0_dB)
         total_bits = total_bits + length(bits);
     end
     
-    % Calculate SER and BER for each detector
+    % calcul TES et TEB
     for detector = 1:3
         ser(detector, i_snr) = num_symbol_errors(detector) / total_symbols;
         ber(detector, i_snr) = num_bit_errors(detector) / total_bits;
     end
     
-    % Theoretical SER and BER for QPSK
+    % courbes theoriques
     theoretical_ser(i_snr) = erfc(sqrt((1/2)*Eb_N0_lin))
     theoretical_ber(i_snr) = theoretical_ser(i_snr) / bits_per_symbol
 end
 
-% Plot the results
+% affichages
 figure;
 semilogy(Eb_N0_dB, ser(1, :), 'b-o', 'LineWidth', 1.5);
 hold on;
@@ -83,10 +81,10 @@ semilogy(Eb_N0_dB, ser(2, :), 'g-s', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, ser(3, :), 'm-^', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, theoretical_ser, 'r--', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
-ylabel('Symbol Error Rate (SER)');
+ylabel('Taux erreurs symboles TES');
 grid on;
-legend('Simulated SER (ML Detector 1)', 'Simulated SER (ML Detector 2)', 'Simulated SER (ML Detector 3)', 'Theoretical SER');
-title('QPSK Symbol Error Rate vs E_b/N_0');
+legend('TES simulé (ML1)', 'TES simulé (ML2)', 'TES simulé (ML3)', 'TES theorique');
+title('Taux d'erreurs symboles en fonction du E_b/N_0');
 
 figure;
 semilogy(Eb_N0_dB, ber(1, :), 'b-o', 'LineWidth', 1.5);
@@ -95,20 +93,20 @@ semilogy(Eb_N0_dB, ber(2, :), 'g-s', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, ber(3, :), 'm-^', 'LineWidth', 1.5);
 semilogy(Eb_N0_dB, theoretical_ber, 'r--', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
-ylabel('Bit Error Rate (BER)');
+ylabel('Taux d'erreur binaires');
 grid on;
-legend('Simulated BER (ML Detector 1)', 'Simulated BER (ML Detector 2)', 'Simulated BER (ML Detector 3)', 'Theoretical BER');
-title('QPSK Bit Error Rate vs E_b/N_0');
-xlim([min(Eb_N0_dB), max(Eb_N0_dB)]); % Ensure the x-axis goes to the full range of -2 to 14 dB
+legend('TEB simulé (ML1)', 'TEB simulé (ML2)', 'TEB simulé (ML3)', 'TEB theorique');
+title('Taux d'erreur binaire en fonction du E_b/N_0');
+xlim([min(Eb_N0_dB), max(Eb_N0_dB)]);
 
-% Plot execution times for each detector
+% affichages
 figure;
 plot(Eb_N0_dB, execution_times(1, :) / nb_frames, 'b-o', 'LineWidth', 1.5);
 hold on;
 plot(Eb_N0_dB, execution_times(2, :) / nb_frames, 'g-s', 'LineWidth', 1.5);
 plot(Eb_N0_dB, execution_times(3, :) / nb_frames, 'm-^', 'LineWidth', 1.5);
 xlabel('E_b/N_0 (dB)');
-ylabel('Average Execution Time per Frame (seconds)');
+ylabel('Temps moyen execution');
 grid on;
-legend('ML Detector 1', 'ML Detector 2', 'ML Detector 3');
-title('Average Execution Time vs E_b/N_0');
+legend('ML1', 'ML2', 'ML3');
+title('Temps moyen execution en fonction du E_b/N_0');
