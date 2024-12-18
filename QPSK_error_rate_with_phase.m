@@ -1,4 +1,3 @@
-% QPSK Error Rate Simulation Script
 % initialisation
 A = 15;
 Delta = 10;
