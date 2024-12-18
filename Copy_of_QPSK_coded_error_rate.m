@@ -23,7 +23,7 @@ H = [1 1 1 0 1 0 0 0;
 
 % Liste de tous les mots de code possibles
 ListeCodeWord = GenerateListeCodeWords(G);
-size(ListeCodeWord)
+size(ListeCodeWord);
 
 bits_per_symbol = log2(4); % QPSK
 num_bits_per_frame = num_codewords_per_frame * k_c;
@@ -42,10 +42,10 @@ for i_snr = 1:length(Eb_N0_dB)
     for frame = 1:nb_frames
         % Etape 1 : generation des bits aleatoires
         b = randi([0 1], 1, num_bits_per_frame);
-        size(b)
+        size(b);
         % Etape 2 : Encode
         c = Encode(G, b);
-        size(c)
+        size(c);
         % Etape 3 : Mapping des bits en symboles
         qpsk_symbols = Bit2SymbolMappingQPSKGray(A, c);
 
@@ -56,7 +56,7 @@ for i_snr = 1:length(Eb_N0_dB)
         demapped_bits = Symbol2BitsDemappingQPSKGray(A, Delta, received_symbols);
 
         % Etape 6 : Decode les bits 
-        decoded_bits = HMLDecode(ListeCodeWord, demapped_bits)
+        decoded_bits = HMLDecode(ListeCodeWord, demapped_bits);
 
         % Etape 7 : Calcul des erreurs
         total_errors = total_errors + sum(b ~= decoded_bits);
