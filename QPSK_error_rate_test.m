@@ -60,17 +60,17 @@ for i=1:length(E_N0)
    List_SER(i)=sym_err/(k*nb_frames/2);
 
    %Resultat
-   fprintf('Temps execution moyen : %.5f secondes\n',mean(temps_execution))
-   fprintf('Pour un SNR E/N0 en dB : %d\n',E_N0(i))
-   fprintf('On trouve un TEB de :%.5f et un TES de :%.5f\n',bit_err/(k*nb_frames),sym_err/(k*nb_frames/2))
+   %fprintf('Temps execution moyen : %.5f secondes\n',mean(temps_execution))
+   %fprintf('Pour un SNR E/N0 en dB : %d\n',E_N0(i))
+   %fprintf('On trouve un TEB de :%.5f et un TES de :%.5f\n',bit_err/(k*nb_frames),sym_err/(k*nb_frames/2))
 
    %plot
    %semilogy(E_N0(i),bit_err)
   
 end
 
-List_BER
-theoretical_ber
+List_BER;
+theoretical_ber;
 semilogy(E_N0,theoretical_ber, 'r--', 'LineWidth', 1.5)
 hold on;
 semilogy(E_N0,List_BER, 'g-s', 'LineWidth', 1.5)
